@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29905.134
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Teams.ConferenceApi", "Teams.ConferenceApi\Teams.ConferenceApi.csproj", "{636BDF80-6DAC-4990-9D07-0B352A7C0942}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Teams.ConferenceApi.TokenManager", "Teams.ConferenceApi.TokenManager\Teams.ConferenceApi.TokenManager.csproj", "{F605507F-DD79-42BF-B90A-6F80A08C5F15}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{636BDF80-6DAC-4990-9D07-0B352A7C0942}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{636BDF80-6DAC-4990-9D07-0B352A7C0942}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{636BDF80-6DAC-4990-9D07-0B352A7C0942}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{636BDF80-6DAC-4990-9D07-0B352A7C0942}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F605507F-DD79-42BF-B90A-6F80A08C5F15}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F605507F-DD79-42BF-B90A-6F80A08C5F15}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F605507F-DD79-42BF-B90A-6F80A08C5F15}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F605507F-DD79-42BF-B90A-6F80A08C5F15}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A8B2C86D-F182-4B84-9776-1A8936C0A378}
+	EndGlobalSection
+EndGlobal

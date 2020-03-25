@@ -1,0 +1,63 @@
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+using Microsoft.Identity.Client;
+using Microsoft.IdentityModel.Protocols;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using Microsoft.IdentityModel.Tokens;
+using System;
+using System.IdentityModel.Tokens.Jwt;
+using Teams.ConferenceApi.TokenManager.Interfaces;
+
+namespace Teams.ConferenceApi.TokenManager.Extensions
+{
+    public static class IServiceCollectionExtensions
+    {
+        public static IServiceCollection AddTokenValidatorDependencies(this IServiceCollection serviceCollection, IConfiguration configuration)
+        {
+            _ = configuration ?? throw new ArgumentNullException(nameof(configuration));
+
+            serviceCollection.Configure<TokenValidatorConfiguration>(tvc => configuration.Bind("TokenValidator", tvc));
+            serviceCollection.AddSingleton<IConfigurationManager<OpenIdConnectConfiguration>, ConfigurationManager<OpenIdConnectConfiguration>>((serviceProvider) =>
+            {
+                var tokenManagerConfigOptions = serviceProvider.GetRequiredService<IOptions<TokenValidatorConfiguration>>();
+                var tokenManagerConfig = tokenManagerConfigOptions.Value;
+                var metadataAddress = $"{tokenManagerConfig.AuthorityUri}/.well-known/openid-configuration";
+                return new ConfigurationManager<OpenIdConnectConfiguration>(metadataAddress, new OpenIdConnectConfigurationRetriever());
+            });
+            serviceCollection.AddSingleton<ISecurityTokenValidator, JwtSecurityTokenHandler>();
+            serviceCollection.AddSingleton<ITokenValidator, TokenValidator>();
+
+            return serviceCollection;
+        }
+
+        public static IServiceCollection AddTokenCreatorDependencies(this IServiceCollection serviceCollection, IConfiguration configuration)
+        {
+            _ = configuration ?? throw new ArgumentNullException(nameof(configuration));
+
+            serviceCollection.Configure<TokenCreatorConfiguration>(tcc => configuration.Bind("TokenCreator", tcc));
+            serviceCollection.AddSingleton<ITokenCreator, TokenCreator>();
+            serviceCollection.AddSingleton<AbstractApplicationBuilder<ConfidentialClientApplicationBuilder>, ConfidentialClientApplicationBuilder>((sp) =>
+            {
+                var options = sp.GetRequiredService<IOptions<TokenCreatorConfiguration>>();
+                var tokenCreatorConfiguration = options.Value;
+
+                return ConfidentialClientApplicationBuilder
+                    .Create(tokenCreatorConfiguration.ClientId)
+                    .WithClientSecret(tokenCreatorConfiguration.ClientSecret)
+                    .WithAuthority(AzureCloudInstance.AzurePublic, tokenCreatorConfiguration.TenantId);
+            });
+            serviceCollection.AddSingleton<AbstractApplicationBuilder<PublicClientApplicationBuilder>, PublicClientApplicationBuilder>((sp) =>
+            {
+                var options = sp.GetRequiredService<IOptions<TokenCreatorConfiguration>>();
+                var tokenCreatorConfiguration = options.Value;
+
+                return PublicClientApplicationBuilder
+                    .Create(tokenCreatorConfiguration.ClientId)
+                    .WithAuthority(AzureCloudInstance.AzurePublic, tokenCreatorConfiguration.TenantId);
+            });
+
+            return serviceCollection;
+        }
+    }
+}

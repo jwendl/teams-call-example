@@ -1,0 +1,62 @@
+﻿using Microsoft.Extensions.Options;
+using System;
+using System.Collections.Generic;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Threading;
+using System.Threading.Tasks;
+using Teams.ConferenceApi.TokenManager.Interfaces;
+
+namespace Teams.ConferenceApi.TokenManager.Handlers
+{
+    public class AuthenticationMessageHandler
+        : DelegatingHandler
+    {
+        private readonly ITokenCreator tokenCreator;
+        private readonly TokenCreatorConfiguration tokenCreatorConfiguration;
+
+        public AuthenticationMessageHandler(ITokenCreator tokenCreator, IOptions<TokenCreatorConfiguration> options)
+        {
+            this.tokenCreator = tokenCreator ?? throw new ArgumentNullException(nameof(tokenCreator));
+            _ = options ?? throw new ArgumentNullException(nameof(tokenCreator));
+
+            tokenCreatorConfiguration = options.Value;
+        }
+
+        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        {
+            _ = request ?? throw new ArgumentNullException(nameof(request));
+
+            var httpRequestHeaders = request.Headers;
+
+            // If you have the following attribute in your interface, the authorization header will be "Bearer", not null.
+            // [Headers("Authorization: Bearer")]
+            // If we have a token, then we want to use that token - otherwise generate a service to service one.
+            var authenticationHeaderValue = httpRequestHeaders.Authorization;
+            if (authenticationHeaderValue != null)
+            {
+                if (authenticationHeaderValue.Scheme == "Bearer" && !string.IsNullOrWhiteSpace(authenticationHeaderValue.Parameter))
+                {
+                    var scopes = new List<string>() { "https://graph.microsoft.com/User.Read" };
+                    var accessToken = await tokenCreator.GetAccessTokenOnBehalfOf(scopes, authenticationHeaderValue.Parameter);
+                    httpRequestHeaders.Authorization = new AuthenticationHeaderValue(authenticationHeaderValue.Scheme, accessToken);
+                }
+                else
+                {
+                    if (!string.IsNullOrWhiteSpace(tokenCreatorConfiguration.TestUsername) && !string.IsNullOrWhiteSpace(tokenCreatorConfiguration.TestPassword))
+                    {
+                        var accessToken = await tokenCreator.GetIntegrationTestTokenAsync();
+                        httpRequestHeaders.Authorization = new AuthenticationHeaderValue(authenticationHeaderValue.Scheme, accessToken);
+                    }
+                    else
+                    {
+                        var accessToken = await tokenCreator.GetClientApplicationAccessTokenAsync();
+                        httpRequestHeaders.Authorization = new AuthenticationHeaderValue(authenticationHeaderValue.Scheme, accessToken);
+                    }
+                }
+            }
+
+            return await base.SendAsync(request, cancellationToken);
+        }
+    }
+}

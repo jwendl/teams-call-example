@@ -84,7 +84,7 @@ namespace Teams.ConferenceApi
             var response = new ContentResult()
             {
                 Content = result,
-                ContentType = "application/json",
+                ContentType = "text/html",
                 StatusCode = (int)HttpStatusCode.OK
             };
 

@@ -31,9 +31,9 @@ namespace Teams.ConferenceApi
         }
 
         [FunctionName(nameof(CreateConferenceCall))]
-        [OpenApiOperation(nameof(CreateConferenceCall), "Create a Thing", Description = "Creates a thing item.")]
+        [OpenApiOperation(nameof(CreateConferenceCall), "Create Call", Description = "Creates a call meeting.")]
         [OpenApiParameter("Authorization", In = ParameterLocation.Header, Required = true, Type = typeof(string))]
-        [OpenApiRequestBody("application/json", typeof(User), Description = "The new thing object.")]
+        [OpenApiRequestBody("application/json", typeof(User), Description = "A user object.")]
         [OpenApiResponseBody(HttpStatusCode.Created, "application/json", typeof(User))]
         [OpenApiResponseBody(HttpStatusCode.BadRequest, "text/plain", typeof(string))]
         public async Task<HttpResponseMessage> CreateConferenceCall([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "calls")] HttpRequestMessage req, ILogger log)

@@ -32,7 +32,7 @@ namespace Teams.ConferenceApi
         [FunctionName(nameof(CreateUser))]
         [OpenApiOperation(nameof(CreateUser), "Create a User", Description = "Creates a user.")]
         [OpenApiParameter("Authorization", In = ParameterLocation.Header, Required = true, Type = typeof(string))]
-        [OpenApiRequestBody("application/json", typeof(User), Description = "The new thing object.")]
+        [OpenApiRequestBody("application/json", typeof(User), Description = "The new user information.")]
         [OpenApiResponseBody(HttpStatusCode.Created, "application/json", typeof(User))]
         [OpenApiResponseBody(HttpStatusCode.BadRequest, "text/plain", typeof(string))]
         public async Task<HttpResponseMessage> CreateUser([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "users")] HttpRequestMessage req, ILogger log)

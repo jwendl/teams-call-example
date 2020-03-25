@@ -39,9 +39,6 @@ namespace Teams.ConferenceApi
         {
             _ = req ?? throw new ArgumentNullException(nameof(req));
 
-            var claimsPrincipal = await tokenValidator.ValidateTokenAsync(req.Headers.Authorization);
-            if (claimsPrincipal == null) return new HttpResponseMessage(HttpStatusCode.Unauthorized);
-
             log.LogInformation("Creating user");
             var contentStream = await req.Content.ReadAsStreamAsync();
             var jsonResult = await jsonTextSerializer.DeserializeObjectAsync<User>(contentStream);
@@ -61,9 +58,6 @@ namespace Teams.ConferenceApi
         {
             _ = req ?? throw new ArgumentNullException(nameof(req));
 
-            var claimsPrincipal = await tokenValidator.ValidateTokenAsync(req.Headers.Authorization);
-            if (claimsPrincipal == null) return new HttpResponseMessage(HttpStatusCode.Unauthorized);
-
             log.LogInformation("Getting user list");
             var createdItem = await userRepository.FetchAllUsersAsync();
             var content = new StringContent(JsonSerializer.Serialize(createdItem), Encoding.UTF8, "application/json");
@@ -80,9 +74,6 @@ namespace Teams.ConferenceApi
         {
             _ = req ?? throw new ArgumentNullException(nameof(req));
 
-            var claimsPrincipal = await tokenValidator.ValidateTokenAsync(req.Headers.Authorization);
-            if (claimsPrincipal == null) return new HttpResponseMessage(HttpStatusCode.Unauthorized);
-
             log.LogInformation("Getting user list");
             var item = await userRepository.FetchItemByIdAsync(userId);
             var content = new StringContent(JsonSerializer.Serialize(item), Encoding.UTF8, "application/json");
@@ -98,9 +89,6 @@ namespace Teams.ConferenceApi
         public async Task<HttpResponseMessage> DeleteUser([HttpTrigger(AuthorizationLevel.Anonymous, "delete", Route = "users/{userId}")] HttpRequestMessage req, ILogger log, string userId)
         {
             _ = req ?? throw new ArgumentNullException(nameof(req));
-
-            var claimsPrincipal = await tokenValidator.ValidateTokenAsync(req.Headers.Authorization);
-            if (claimsPrincipal == null) return new HttpResponseMessage(HttpStatusCode.Unauthorized);
 
             log.LogInformation("Getting user list");
             await userRepository.DeleteItemByIdAsync(userId);

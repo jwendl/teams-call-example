@@ -23,7 +23,7 @@ namespace Teams.ConferenceApi
 
         [OpenApiIgnore]
         [FunctionName(nameof(GenerateJsonDocumentation))]
-        public async Task<IActionResult> GenerateJsonDocumentation([HttpTrigger(AuthorizationLevel.Function, "get", Route = DocumentName)] HttpRequest req)
+        public async Task<IActionResult> GenerateJsonDocumentation([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = DocumentName)] HttpRequest req)
         {
             _ = req ?? throw new ArgumentNullException(nameof(req));
 
@@ -58,7 +58,7 @@ namespace Teams.ConferenceApi
 
         [OpenApiIgnore]
         [FunctionName(nameof(GenerateDocumentationInterface))]
-        public async Task<IActionResult> GenerateDocumentationInterface([HttpTrigger(AuthorizationLevel.Function, "get", Route = "docs")] HttpRequest req)
+        public async Task<IActionResult> GenerateDocumentationInterface([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "docs")] HttpRequest req)
         {
             _ = req ?? throw new ArgumentNullException(nameof(req));
 

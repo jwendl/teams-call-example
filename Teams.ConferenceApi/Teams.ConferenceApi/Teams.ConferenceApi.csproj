@@ -9,7 +9,7 @@
     <PackageReference Include="Microsoft.Azure.Functions.Extensions" Version="1.0.0" />
     <PackageReference Include="Microsoft.Graph" Version="3.0.1" />
     <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="3.0.1" />
-    <PackageReference Include="System.Text.Json" Version="4.7.1" />
+    <PackageReference Include="System.Text.Json" Version="8.0.4" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Teams.ConferenceApi.TokenManager\Teams.ConferenceApi.TokenManager.csproj" />
